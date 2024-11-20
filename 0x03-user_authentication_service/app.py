@@ -28,3 +28,17 @@ def users():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")
+
+@app.route('/sessions', methods=['POST'])
+def login():
+    """Login user and create session"""
+    email = request.form.get('email')
+    password = request.form.get('password')
+    
+    if not AUTH.valid_login(email, password):
+        abort(401)
+        
+    session_id = AUTH.create_session(email)
+    response = jsonify({"email": email, "message": "logged in"})
+    response.set_cookie('session_id', session_id)
+    return response
