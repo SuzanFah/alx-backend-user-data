@@ -4,14 +4,9 @@
 from db import DB
 from user import User
 from sqlalchemy.orm.exc import NoResultFound
+from typing import Union
 import bcrypt
 import uuid
-from typing import Union
-
-
-def _hash_password(password: str) -> bytes:
-    """Hash password with bcrypt"""
-    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
 
 class Auth:
@@ -62,6 +57,15 @@ class Auth:
             return user
         except NoResultFound:
             return None
+
+    def destroy_session(self, user_id: int) -> None:
+        """Destroys a session for the user"""
+        self._db.update_user(user_id, session_id=None)
+
+
+def _hash_password(password: str) -> bytes:
+    """Hash password with bcrypt"""
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
 
 def _generate_uuid() -> str:
