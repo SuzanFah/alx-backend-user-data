@@ -41,12 +41,6 @@ class DB:
         return new_user
 
     def find_user_by(self, **kwargs) -> User:
-        """Find user by arbitrary attributes
-        """
-        try:
-            user = self._session.query(User).filter_by(**kwargs).first()
-            if user is None:
-                raise NoResultFound
-            return user
-        except InvalidRequestError:
+        """Find user by arbitrary attributes"""
+        return self._session.query(User).filter_by(**kwargs).one()
             raise InvalidRequestError
